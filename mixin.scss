@@ -1,24 +1,44 @@
-@mixin border-dotted($position: bottom, $size: 1px, $gap: 5px, $color: #333) {
-  $section: $size + $gap;
-  @if $position == 'top' or $position == 'bottom' {
-    background-repeat: repeat-x;
-    background-size: $section $size;
-    @if $position == 'top' {
-      background-position: 100% 0;
-      background-image: linear-gradient(to left, $color, $color ($size / $section * 100%), transparent ($size / $section * 100%));
+// This doesn't work with multiple borders
+@mixin border-bottom-dotted($size: 1px, $gap: 5px, $color: inherit) {
+  @include border-dotted((bottom, $size, $gap, $color));
+}
+
+
+@mixin dotted-border($parameters...) {
+  $background-image-list: ();
+  $background-position-list: ();
+  $background-size-list: ();
+  $background-repeat-list: ();
+
+  @each $side, $size, $gap, $color in $parameters {
+    $section: $size + $gap;
+    $gradient:  $color, $color ($size / $section * 100%), transparent ($size / $section * 100%);
+
+    @if $side == 'top' or $side == 'bottom' {
+      $background-repeat-list: append($background-repeat-list, (repeat-x), 'comma');
+      $background-size-list: append($background-size-list, ($section $size), 'comma');
+      @if $side == 'top' {
+        $background-position-list: append($background-position-list, (100% 0), 'comma');
+        $background-image-list: append($background-image-list, (linear-gradient(to left, $gradient)), 'comma');
+      } @else {
+        $background-position-list: append($background-position-list, (0 100%), 'comma');
+        $background-image-list: append($background-image-list, (linear-gradient(to right, $gradient)), 'comma');
+      }
     } @else {
-      background-position: 0 100%;
-      background-image: linear-gradient(to right, $color, $color ($size / $section * 100%), transparent ($size / $section * 100%));
-    }
-  } @else {
-    background-repeat: repeat-y;
-    background-size: $size $section;
-    @if $position == 'right' {
-      background-position: 100% 100%;
-      background-image: linear-gradient(to top, $color, $color ($size / $section * 100%), transparent ($size / $section * 100%));
-    } @else {
-      background-position: 0 0;
-      background-image: linear-gradient(to bottom, $color, $color ($size / $section * 100%), transparent ($size / $section * 100%));
+      $background-repeat-list: append($background-repeat-list, (repeat-y), 'comma');
+      $background-size-list: append($background-size-list, ($size $section), 'comma');
+      @if $side == 'right' {
+        $background-position-list: append($background-position-list, (100% 100%), 'comma');
+        $background-image-list: append($background-image-list, (linear-gradient(to top, $gradient)), 'comma');
+      } @else {
+        $background-position-list: append($background-position-list, (0 0), 'comma');
+        $background-image-list: append($background-image-list, (linear-gradient(to bottom, $gradient)), 'comma');
+      }
     }
   }
+
+  background: $background-image-list;
+  background-size: $background-size-list;
+  background-position: $background-position-list;
+  background-repeat: $background-repeat-list;
 }
