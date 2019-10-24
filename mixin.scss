@@ -1,44 +1,65 @@
-// This doesn't work with multiple borders
-@mixin border-bottom-dotted($size: 1px, $gap: 5px, $color: inherit) {
-  @include border-dotted((bottom, $size, $gap, $color));
+@function bd-top($size: 1px, $gap: 5px, $color: #333) {
+  @return (top, $size, $gap, $color);
 }
+@function bd-right($size: 1px, $gap: 5px, $color: #333) {
+  @return (right, $size, $gap, $color);
+}
+@function bd-bottom($size: 1px, $gap: 5px, $color: #333) {
+  @return (bottom, $size, $gap, $color);
+}
+@function bd-left($size: 1px, $gap: 5px, $color: #333) {
+  @return (left, $size, $gap, $color);
+}
+// @function bd-all($size: 1px, $gap: 5px, $color: #333) {
+//   @return bd-horizontal($size, $gap, $color), bd-vertical($size, $gap, $color);
+// }
+// @function bd-horizontal($size: 1px, $gap: 5px, $color: #333) {
+//   @return bd-right($size, $gap, $color), bd-left($size, $gap, $color);
+// }
+// @function bd-vertical($size: 1px, $gap: 5px, $color: #333) {
+//   @return (top, $size, $gap, $color), (top, $size, $gap, $color);
+// }
 
 
-@mixin dotted-border($parameters...) {
-  $background-image-list: ();
-  $background-position-list: ();
-  $background-size-list: ();
-  $background-repeat-list: ();
+@mixin dotted($parameters...) {
+  $bg-image-list: ();
+  $bg-position-list: ();
+  $bg-size-list: ();
+  $bg-repeat-list: ();
 
   @each $side, $size, $gap, $color in $parameters {
     $section: $size + $gap;
     $gradient:  $color, $color ($size / $section * 100%), transparent ($size / $section * 100%);
 
-    @if $side == 'top' or $side == 'bottom' {
-      $background-repeat-list: append($background-repeat-list, (repeat-x), 'comma');
-      $background-size-list: append($background-size-list, ($section $size), 'comma');
-      @if $side == 'top' {
-        $background-position-list: append($background-position-list, (100% 0), 'comma');
-        $background-image-list: append($background-image-list, (linear-gradient(to left, $gradient)), 'comma');
-      } @else {
-        $background-position-list: append($background-position-list, (0 100%), 'comma');
-        $background-image-list: append($background-image-list, (linear-gradient(to right, $gradient)), 'comma');
-      }
-    } @else {
-      $background-repeat-list: append($background-repeat-list, (repeat-y), 'comma');
-      $background-size-list: append($background-size-list, ($size $section), 'comma');
+    $bg-image-value: linear-gradient(to right, $gradient);
+    $bg-position-value: 0 100%;
+    $bg-size-value: $section $size;
+    $bg-repeat-value: repeat-x;
+
+    @if $side == 'top' {
+      $bg-position-value: 100% 0;
+      $bg-image-value: linear-gradient(to left, $gradient);
+    } 
+    @if $side == 'right' or $side == 'left' {
+      $bg-repeat-value: repeat-y;
+      $bg-size-value: $size $section;
       @if $side == 'right' {
-        $background-position-list: append($background-position-list, (100% 100%), 'comma');
-        $background-image-list: append($background-image-list, (linear-gradient(to top, $gradient)), 'comma');
+        $bg-position-value: 100% 100%;
+        $bg-image-value: linear-gradient(to top, $gradient);
       } @else {
-        $background-position-list: append($background-position-list, (0 0), 'comma');
-        $background-image-list: append($background-image-list, (linear-gradient(to bottom, $gradient)), 'comma');
+        $bg-position-value: 0 0;
+        $bg-image-value: linear-gradient(to bottom, $gradient);
       }
     }
+
+    $bg-image-list: append($bg-image-list, $bg-image-value, 'comma');
+    $bg-size-list: append($bg-size-list, $bg-size-value, 'comma');
+    $bg-position-list: append($bg-position-list, $bg-position-value, 'comma');
+    $bg-repeat-list: append($bg-repeat-list, $bg-repeat-value, 'comma');
   }
 
-  background: $background-image-list;
-  background-size: $background-size-list;
-  background-position: $background-position-list;
-  background-repeat: $background-repeat-list;
+  background-image: $bg-image-list;
+  background-size: $bg-size-list;
+  background-position: $bg-position-list;
+  background-repeat: $bg-repeat-list;
 }
