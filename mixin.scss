@@ -1,4 +1,13 @@
 @function border-construtor($side, $size, $gap, $color, $start) {
+  @if $size <= 0 {
+    @error "Size property have to be more than zero";
+  }
+  @if $gap < 0 {
+    @error "Gap property can not be negative";
+  }
+  @if type-of($color) != color {
+    @error "Color property isn't a color";
+  }
   $section: $size + $gap;
   @return (
     bg-image: (
@@ -21,68 +30,84 @@
 }
 
 @function direction-builder($side, $start) {
-  @if $start == 'opposite' {
-    @if $side == 'top' {
+  @if $start == 'origin' or $start == 'center' {
+    @if $side == 'bottom' {
+      @return to right;
+    } @else if $side == 'top' {
+      @return to left;
+    } @else if $side == 'right' {
+      @return to top;
+    } @else if $side == 'left' {
+      @return to bottom;
+    } @else {
+      @error "Side property doesn't work as intended";
+    }
+  } @else if $start == 'opposite' {
+    @if $side == 'bottom' {
+      @return to left;
+    } @else if $side == 'top' {
       @return to right;
     } @else if $side == 'right' {
       @return to bottom;
     } @else if $side == 'left' {
       @return to top;
     } @else {
-      @return to left;
+      @error "Side property doesn't work as intended";
     }
   } @else {
-    @if $side == 'top' {
-      @return to left;
-    } @else if $side == 'right' {
-      @return to top;
-    } @else if $side == 'left' {
-      @return to bottom;
-    } @else {
-      @return to right;
-    }
+    @error "Property #{$start} must be either origin, center, or opposite.";
   }
 }
 
 @function position-builder($side, $start) {
   @if $start == 'center' {
     @return $side;
+  } @else if $start == 'origin' {
+    @if $side == 'bottom' {
+      @return 0 100%;
+    } @else if $side == 'top' {
+      @return 100% 0;
+    } @else if $side == 'right' {
+      @return 100% 100%;
+    } @else if $side == 'left' {
+      @return 0 0;
+    } @else {
+      @error "Side property doesn't work as intended";
+    }
   } @else if $start == 'opposite' {
-    @if $side == 'top' {
+    @if $side == 'bottom' {
+      @return 100% 100%;
+    } @else if $side == 'top' {
       @return 0 0;
     } @else if $side == 'right' {
       @return 100% 0;
     } @else if $side == 'left' {
       @return 0 100%;
     } @else {
-      @return 100% 100%;
+      @error "Side property doesn't work as intended";
     }
   } @else {
-    @if $side == 'top' {
-      @return 100% 0;
-    } @else if $side == 'right' {
-      @return 100% 100%;
-    } @else if $side == 'left' {
-      @return 0 0;
-    } @else {
-      @return 0 100%;
-    }
+    @error "Property #{$start} must be either origin, center, or opposite.";
   }
 }
 
 @function repeat-builder($side) {
-  @if $side == 'right' or $side == 'left' {
+  @if $side == 'top' or $side == 'bottom' {
+    @return repeat-x;
+  } @else if $side == 'right' or $side == 'left' {
     @return repeat-y;
   } @else {
-    @return repeat-x;
+    @error "Side property doesn't work as intended";
   }
 }
 
 @function size-builder($side, $size, $section) {
-  @if $side == 'right' or $side == 'left' {
+  @if $side == 'top' or $side == 'bottom' {
+    @return $section $size;
+  } @else if $side == 'right' or $side == 'left' {
     @return $size $section;
   } @else {
-    @return $section $size;
+    @error "Side property doesn't work as intended";
   }
 }
 
