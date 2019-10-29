@@ -123,15 +123,16 @@
 @function dotted-left($size: 1px, $gap: 5px, $color: #333, $start: origin) {
   @return border-construtor(left, $size, $gap, $color, $start);
 }
-// @function bd-all($size: 1px, $gap: 5px, $color: #333) {
-//   @return bd-horizontal($size, $gap, $color), bd-vertical($size, $gap, $color);
-// }
-// @function bd-horizontal($size: 1px, $gap: 5px, $color: #333) {
-//   @return bd-right($size, $gap, $color), bd-left($size, $gap, $color);
-// }
-// @function bd-vertical($size: 1px, $gap: 5px, $color: #333) {
-//   @return (top, $size, $gap, $color), (top, $size, $gap, $color);
-// }
+@function dotted-horizontal($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return dotted-right($size, $gap, $color, $start), dotted-left($size, $gap, $color, $start);
+}
+@function dotted-vertical($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return dotted-top($size, $gap, $color, $start), dotted-bottom($size, $gap, $color, $start);
+}
+@function dotted($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return dotted-top($size, $gap, $color, $start), dotted-right($size, $gap, $color, $start),
+    dotted-bottom($size, $gap, $color, $start), dotted-left($size, $gap, $color, $start);
+}
 
 @mixin custom-border($borders...) {
   $bg-image-list: ();
@@ -139,11 +140,21 @@
   $bg-size-list: ();
   $bg-repeat-list: ();
 
-  @each $border in $borders {
-    $bg-image-list: append($bg-image-list, map-get($border, bg-image), 'comma');
-    $bg-size-list: append($bg-size-list, map-get($border, bg-size), 'comma');
-    $bg-position-list: append($bg-position-list, map-get($border, bg-position), 'comma');
-    $bg-repeat-list: append($bg-repeat-list, map-get($border, bg-repeat), 'comma');
+  @each $border-list in $borders {
+    @if type-of($border-list) == list {
+      @each $border in $border-list {
+        $bg-image-list: append($bg-image-list, map-get($border, bg-image), 'comma');
+        $bg-size-list: append($bg-size-list, map-get($border, bg-size), 'comma');
+        $bg-position-list: append($bg-position-list, map-get($border, bg-position), 'comma');
+        $bg-repeat-list: append($bg-repeat-list, map-get($border, bg-repeat), 'comma');
+      }
+    } @else {
+      $border: $border-list;
+      $bg-image-list: append($bg-image-list, map-get($border, bg-image), 'comma');
+      $bg-size-list: append($bg-size-list, map-get($border, bg-size), 'comma');
+      $bg-position-list: append($bg-position-list, map-get($border, bg-position), 'comma');
+      $bg-repeat-list: append($bg-repeat-list, map-get($border, bg-repeat), 'comma');
+    }
   }
 
   background-image: $bg-image-list;
