@@ -5,7 +5,7 @@
       linear-gradient(direction-builder($side, $start), gradient-builder($size, $section, $color))
     ),
     bg-size: (
-      $section $size
+      size-builder($side, $size, $section)
     ),
     bg-position: (
       position-builder($side, $start)
@@ -75,6 +75,14 @@
     @return repeat-y;
   } @else {
     @return repeat-x;
+  }
+}
+
+@function size-builder($side, $size, $section) {
+  @if $side == 'right' or $side == 'left' {
+    @return $size $section;
+  } @else {
+    @return $section $size;
   }
 }
 
