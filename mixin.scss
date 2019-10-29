@@ -1,48 +1,94 @@
-@function border-construtor($side, $size, $gap, $color) {
+@function border-construtor($side, $size, $gap, $color, $start) {
   $section: $size + $gap;
-  $gradient: $color, $color ($size / $section * 100%),
-    transparent ($size / $section * 100%);
-
-  $bg-image-value: linear-gradient(to right, $gradient);
-  $bg-position-value: 0 100%;
-  $bg-size-value: $section $size;
-  $bg-repeat-value: repeat-x;
-
-  @if $side == 'top' {
-    $bg-position-value: 100% 0;
-    $bg-image-value: linear-gradient(to left, $gradient);
-  }
-  @if $side == 'right' or $side == 'left' {
-    $bg-repeat-value: repeat-y;
-    $bg-size-value: $size $section;
-    @if $side == 'right' {
-      $bg-position-value: 100% 100%;
-      $bg-image-value: linear-gradient(to top, $gradient);
-    } @else {
-      $bg-position-value: 0 0;
-      $bg-image-value: linear-gradient(to bottom, $gradient);
-    }
-  }
-
   @return (
-    bg-image: $bg-image-value,
-    bg-size: $bg-size-value,
-    bg-position: $bg-position-value,
-    bg-repeat: $bg-repeat-value
+    bg-image: (
+      linear-gradient(direction-builder($side, $start), gradient-builder($size, $section, $color))
+    ),
+    bg-size: (
+      $section $size
+    ),
+    bg-position: (
+      position-builder($side, $start)
+    ),
+    bg-repeat: (
+      repeat-builder($side)
+    )
   );
 }
 
-@function dotted-top($size: 1px, $gap: 5px, $color: #333) {
-  @return border-construtor(top, $size, $gap, $color);
+@function gradient-builder($length, $section, $color) {
+  @return $color, $color ($length / $section * 100%), transparent ($length / $section * 100%);
 }
-@function dotted-right($size: 1px, $gap: 5px, $color: #333) {
-  @return (right, $size, $gap, $color);
+
+@function direction-builder($side, $start) {
+  @if $start == 'opposite' {
+    @if $side == 'top' {
+      @return to right;
+    } @else if $side == 'right' {
+      @return to bottom;
+    } @else if $side == 'left' {
+      @return to top;
+    } @else {
+      @return to left;
+    }
+  } @else {
+    @if $side == 'top' {
+      @return to left;
+    } @else if $side == 'right' {
+      @return to top;
+    } @else if $side == 'left' {
+      @return to bottom;
+    } @else {
+      @return to right;
+    }
+  }
 }
-@function dotted-bottom($size: 1px, $gap: 5px, $color: #333) {
-  @return border-construtor(bottom, $size, $gap, $color);
+
+@function position-builder($side, $start) {
+  @if $start == 'center' {
+    @return $side;
+  } @else if $start == 'opposite' {
+    @if $side == 'top' {
+      @return 0 0;
+    } @else if $side == 'right' {
+      @return 100% 0;
+    } @else if $side == 'left' {
+      @return 0 100%;
+    } @else {
+      @return 100% 100%;
+    }
+  } @else {
+    @if $side == 'top' {
+      @return 100% 0;
+    } @else if $side == 'right' {
+      @return 100% 100%;
+    } @else if $side == 'left' {
+      @return 0 0;
+    } @else {
+      @return 0 100%;
+    }
+  }
 }
-@function dotted-left($size: 1px, $gap: 5px, $color: #333) {
-  @return border-construtor(left, $size, $gap, $color);
+
+@function repeat-builder($side) {
+  @if $side == 'right' or $side == 'left' {
+    @return repeat-y;
+  } @else {
+    @return repeat-x;
+  }
+}
+
+@function dotted-top($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return border-construtor(top, $size, $gap, $color, $start);
+}
+@function dotted-right($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return border-construtor(right, $size, $gap, $color, $start);
+}
+@function dotted-bottom($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return border-construtor(bottom, $size, $gap, $color, $start);
+}
+@function dotted-left($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+  @return border-construtor(left, $size, $gap, $color, $start);
 }
 // @function bd-all($size: 1px, $gap: 5px, $color: #333) {
 //   @return bd-horizontal($size, $gap, $color), bd-vertical($size, $gap, $color);
