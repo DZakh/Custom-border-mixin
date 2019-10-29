@@ -1,14 +1,48 @@
-@function bd-top($size: 1px, $gap: 5px, $color: #333) {
-  @return (top, $size, $gap, $color);
+@function border-construtor($side, $size, $gap, $color) {
+  $section: $size + $gap;
+  $gradient: $color, $color ($size / $section * 100%),
+    transparent ($size / $section * 100%);
+
+  $bg-image-value: linear-gradient(to right, $gradient);
+  $bg-position-value: 0 100%;
+  $bg-size-value: $section $size;
+  $bg-repeat-value: repeat-x;
+
+  @if $side == 'top' {
+    $bg-position-value: 100% 0;
+    $bg-image-value: linear-gradient(to left, $gradient);
+  }
+  @if $side == 'right' or $side == 'left' {
+    $bg-repeat-value: repeat-y;
+    $bg-size-value: $size $section;
+    @if $side == 'right' {
+      $bg-position-value: 100% 100%;
+      $bg-image-value: linear-gradient(to top, $gradient);
+    } @else {
+      $bg-position-value: 0 0;
+      $bg-image-value: linear-gradient(to bottom, $gradient);
+    }
+  }
+
+  @return (
+    bg-image: $bg-image-value,
+    bg-size: $bg-size-value,
+    bg-position: $bg-position-value,
+    bg-repeat: $bg-repeat-value
+  );
 }
-@function bd-right($size: 1px, $gap: 5px, $color: #333) {
+
+@function dotted-top($size: 1px, $gap: 5px, $color: #333) {
+  @return border-construtor(top, $size, $gap, $color);
+}
+@function dotted-right($size: 1px, $gap: 5px, $color: #333) {
   @return (right, $size, $gap, $color);
 }
-@function bd-bottom($size: 1px, $gap: 5px, $color: #333) {
-  @return (bottom, $size, $gap, $color);
+@function dotted-bottom($size: 1px, $gap: 5px, $color: #333) {
+  @return border-construtor(bottom, $size, $gap, $color);
 }
-@function bd-left($size: 1px, $gap: 5px, $color: #333) {
-  @return (left, $size, $gap, $color);
+@function dotted-left($size: 1px, $gap: 5px, $color: #333) {
+  @return border-construtor(left, $size, $gap, $color);
 }
 // @function bd-all($size: 1px, $gap: 5px, $color: #333) {
 //   @return bd-horizontal($size, $gap, $color), bd-vertical($size, $gap, $color);
@@ -20,42 +54,17 @@
 //   @return (top, $size, $gap, $color), (top, $size, $gap, $color);
 // }
 
-
-@mixin dotted($parameters...) {
+@mixin custom-border($borders...) {
   $bg-image-list: ();
   $bg-position-list: ();
   $bg-size-list: ();
   $bg-repeat-list: ();
 
-  @each $side, $size, $gap, $color in $parameters {
-    $section: $size + $gap;
-    $gradient:  $color, $color ($size / $section * 100%), transparent ($size / $section * 100%);
-
-    $bg-image-value: linear-gradient(to right, $gradient);
-    $bg-position-value: 0 100%;
-    $bg-size-value: $section $size;
-    $bg-repeat-value: repeat-x;
-
-    @if $side == 'top' {
-      $bg-position-value: 100% 0;
-      $bg-image-value: linear-gradient(to left, $gradient);
-    } 
-    @if $side == 'right' or $side == 'left' {
-      $bg-repeat-value: repeat-y;
-      $bg-size-value: $size $section;
-      @if $side == 'right' {
-        $bg-position-value: 100% 100%;
-        $bg-image-value: linear-gradient(to top, $gradient);
-      } @else {
-        $bg-position-value: 0 0;
-        $bg-image-value: linear-gradient(to bottom, $gradient);
-      }
-    }
-
-    $bg-image-list: append($bg-image-list, $bg-image-value, 'comma');
-    $bg-size-list: append($bg-size-list, $bg-size-value, 'comma');
-    $bg-position-list: append($bg-position-list, $bg-position-value, 'comma');
-    $bg-repeat-list: append($bg-repeat-list, $bg-repeat-value, 'comma');
+  @each $border in $borders {
+    $bg-image-list: append($bg-image-list, map-get($border, bg-image), 'comma');
+    $bg-size-list: append($bg-size-list, map-get($border, bg-size), 'comma');
+    $bg-position-list: append($bg-position-list, map-get($border, bg-position), 'comma');
+    $bg-repeat-list: append($bg-repeat-list, map-get($border, bg-repeat), 'comma');
   }
 
   background-image: $bg-image-list;
