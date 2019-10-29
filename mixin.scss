@@ -1,4 +1,28 @@
-@function border-construtor($side, $size, $length, $gap, $color, $start) {
+@function border-construtor($parameters) {
+  $border-defaults: (
+    side: bottom,
+    size: 1px,
+    length: 1px,
+    gap: 5px,
+    color: #333,
+    start: origin
+  );
+  @each $key, $value in $parameters {
+    @if $value == _ {
+      $parameters: map-merge(
+        $parameters,
+        (
+          $key: map-get($border-defaults, $key)
+        )
+      );
+    }
+  }
+  $side: map-get($parameters, side);
+  $size: map-get($parameters, size);
+  $length: map-get($parameters, length);
+  $gap: map-get($parameters, gap);
+  $color: map-get($parameters, color);
+  $start: map-get($parameters, start);
   @if $size < 0 or $gap < 0 or $length < 0 {
     @error "Size, length, and gap properties cannot be negative.";
   }
@@ -105,50 +129,122 @@
   }
 }
 
-@function dotted-top($size: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(top, $size, $size, $gap, $color, $start);
+@function dotted-top($size: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: top,
+      size: $size,
+      length: $size,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dotted-right($size: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(right, $size, $size, $gap, $color, $start);
+@function dotted-right($size: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: right,
+      size: $size,
+      length: $size,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dotted-bottom($size: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(bottom, $size, $size, $gap, $color, $start);
+@function dotted-bottom($size: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: bottom,
+      size: $size,
+      length: $size,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dotted-left($size: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(left, $size, $size, $gap, $color, $start);
+@function dotted-left($size: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: left,
+      size: $size,
+      length: $size,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dotted-horizontal($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+@function dotted-horizontal($size: _, $gap: _, $color: _, $start: _) {
   @return dotted-right($size, $gap, $color, $start), dotted-left($size, $gap, $color, $start);
 }
-@function dotted-vertical($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+@function dotted-vertical($size: _, $gap: _, $color: _, $start: _) {
   @return dotted-top($size, $gap, $color, $start), dotted-bottom($size, $gap, $color, $start);
 }
-@function dotted($size: 1px, $gap: 5px, $color: #333, $start: origin) {
+@function dotted($size: _, $gap: _, $color: _, $start: _) {
   @return dotted-top($size, $gap, $color, $start), dotted-right($size, $gap, $color, $start),
     dotted-bottom($size, $gap, $color, $start), dotted-left($size, $gap, $color, $start);
 }
 
-@function dashed-top($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(top, $size, $length, $gap, $color, $start);
+@function dashed-top($size: _, $length: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: top,
+      size: $size,
+      length: $length,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dashed-right($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(right, $size, $length, $gap, $color, $start);
+@function dashed-right($size: _, $length: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: right,
+      size: $size,
+      length: $length,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dashed-bottom($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(bottom, $size, $length, $gap, $color, $start);
+@function dashed-bottom($size: _, $length: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: bottom,
+      size: $size,
+      length: $length,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dashed-left($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
-  @return border-construtor(left, $size, $length, $gap, $color, $start);
+@function dashed-left($size: _, $length: _, $gap: _, $color: _, $start: _) {
+  @return border-construtor(
+    (
+      side: left,
+      size: $size,
+      length: $length,
+      gap: $gap,
+      color: $color,
+      start: $start
+    )
+  );
 }
-@function dashed-horizontal($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
+@function dashed-horizontal($size: _, $length: _, $gap: _, $color: _, $start: _) {
   @return dashed-right($size, $length, $gap, $color, $start),
     dashed-left($size, $length, $gap, $color, $start);
 }
-@function dashed-vertical($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
+@function dashed-vertical($size: _, $length: _, $gap: _, $color: _, $start: _) {
   @return dashed-top($size, $length, $gap, $color, $start),
     dashed-bottom($size, $length, $gap, $color, $start);
 }
-@function dashed($size: 1px, $length: 1px, $gap: 5px, $color: #333, $start: origin) {
+@function dashed($size: _, $length: _, $gap: _, $color: _, $start: _) {
   @return dashed-top($size, $length, $gap, $color, $start),
     dashed-right($size, $length, $gap, $color, $start),
     dashed-bottom($size, $length, $gap, $color, $start),
