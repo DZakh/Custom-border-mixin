@@ -108,6 +108,7 @@ $border-defaults: (
     }
   }
   @if $start == 'center' {
+    @warn "Property translate doesn't work when property start is center.";
     @return $side;
   } @else if $start == 'origin' {
     @if $side == 'bottom' {
