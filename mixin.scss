@@ -1,46 +1,56 @@
 @function border-construtor($parameters) {
-  $border-defaults: (
-    side: bottom,
-    size: 1px,
-    length: 1px,
-    gap: 5px,
-    color: #333,
-    start: origin
-  );
+  @if map-get($parameters, 'side') == 'vertical' {
+    @return border-construtor( map-merge($parameters, ('side': top)) ),
+            border-construtor( map-merge($parameters, ('side': bottom)) );
+  }
+  @if map-get($parameters, 'side') == 'horizontal' {
+    @return border-construtor( map-merge($parameters, ('side': right)) ),
+            border-construtor( map-merge($parameters, ('side': left)) );
+  }
+  @if map-get($parameters, 'side') == 'all' {
+    @return border-construtor( map-merge($parameters, ('side': top)) ),
+            border-construtor( map-merge($parameters, ('side': right)) ),
+            border-construtor( map-merge($parameters, ('side': bottom)) ),
+            border-construtor( map-merge($parameters, ('side': left)) );
+  }
+  
   @each $key, $value in $parameters {
     @if $value == _ {
-      $parameters: map-merge(
-        $parameters,
-        (
-          $key: map-get($border-defaults, $key)
-        )
-      );
+      $parameters: map-merge($parameters, ($key: map-get($border-defaults, $key)));
     }
   }
-  $side: map-get($parameters, side);
-  $size: map-get($parameters, size);
-  $length: map-get($parameters, length);
-  $gap: map-get($parameters, gap);
-  $color: map-get($parameters, color);
-  $start: map-get($parameters, start);
-  @if $size < 0 or $gap < 0 or $length < 0 {
-    @error "Size, length, and gap properties cannot be negative.";
-  }
+
+  $side: param-get($parameters, 'side');
+  $size: param-get($parameters, 'size');
+  $length: param-get($parameters, 'length');
+  $gap: param-get($parameters, 'gap');
+  $color: param-get($parameters, 'color');
+  $start: param-get($parameters, 'start');
+
   $section: $length + $gap;
   @return (
-    bg-image: (
-      linear-gradient(direction-builder($side, $start), gradient-builder($length, $section, $color))
-    ),
-    bg-size: (
-      size-builder($side, $size, $section)
-    ),
-    bg-position: (
-      position-builder($side, $start)
-    ),
-    bg-repeat: (
-      repeat-builder($side)
-    )
+    bg-image: (linear-gradient(direction-builder($side, $start), gradient-builder($length, $section, $color))),
+    bg-size: (size-builder($side, $size, $section)),
+    bg-position: (position-builder($side, $start)),
+    bg-repeat: (repeat-builder($side))
   );
+}
+
+@function param-get($parameters, $key) {
+  $value: map-get($parameters, $key);
+  @if $key == 'side' and $value != 'top' and $value != 'right' and $value != 'bottom' and $value != 'left' {
+    @error 'Value #{$value} of property #{$key} must be either top, or right, or bottom, or left, or vertical, or horizontal, or all.';
+  }
+  @if ($key == 'size' or $key == 'length' or $key == 'gap') and (type-of($value) != number or type-of($value) == number and $value < 0) {
+    @error 'Value #{$value} of property #{$key} must be non-negative size.';
+  }
+  @if $key == 'color' and type-of($value) != color {
+    @error 'Value #{$value} of property #{$key} must be color.';
+  }
+  @if $key == 'start' and $value != 'origin' and $value != 'center' and $value != 'opposite' {
+    @error 'Value #{$value} of property #{$key} must be either origin, center, or opposite.';
+  }
+  @return $value;
 }
 
 @function gradient-builder($length, $section, $color) {
@@ -58,7 +68,7 @@
     } @else if $side == 'left' {
       @return to bottom;
     } @else {
-      @error "Side property doesn't work as intended";
+      @error "Property #{$side} is invalid.";
     }
   } @else if $start == 'opposite' {
     @if $side == 'bottom' {
@@ -70,10 +80,10 @@
     } @else if $side == 'left' {
       @return to top;
     } @else {
-      @error "Side property doesn't work as intended";
+      @error "Property #{$side} is invalid.";
     }
   } @else {
-    @error "Property #{$start} must be either origin, center, or opposite.";
+    @error "Property #{$start} is invalid.";
   }
 }
 
@@ -90,7 +100,7 @@
     } @else if $side == 'left' {
       @return 0 0;
     } @else {
-      @error "Side property doesn't work as intended";
+      @error "Property #{$side} is invalid.";
     }
   } @else if $start == 'opposite' {
     @if $side == 'bottom' {
@@ -102,10 +112,10 @@
     } @else if $side == 'left' {
       @return 0 100%;
     } @else {
-      @error "Side property doesn't work as intended";
+      @error "Property #{$side} is invalid.";
     }
   } @else {
-    @error "Property #{$start} must be either origin, center, or opposite.";
+    @error "Property #{$start} is invalid.";
   }
 }
 
@@ -115,7 +125,7 @@
   } @else if $side == 'right' or $side == 'left' {
     @return repeat-y;
   } @else {
-    @error "Side property doesn't work as intended";
+    @error "Property #{$side} is invalid.";
   }
 }
 
@@ -125,14 +135,14 @@
   } @else if $side == 'right' or $side == 'left' {
     @return $size $section;
   } @else {
-    @error "Side property doesn't work as intended";
+    @error "Property #{$side} is invalid.";
   }
 }
 
-@function dotted-top($size: _, $gap: _, $color: _, $start: _) {
+@function dotted($side: _, $size: _, $gap: _, $color: _, $start: _) {
   @return border-construtor(
     (
-      side: top,
+      side: $side,
       size: $size,
       length: $size,
       gap: $gap,
@@ -141,57 +151,10 @@
     )
   );
 }
-@function dotted-right($size: _, $gap: _, $color: _, $start: _) {
+@function dashed($side: _, $size: _, $length: _, $gap: _, $color: _, $start: _) {
   @return border-construtor(
     (
-      side: right,
-      size: $size,
-      length: $size,
-      gap: $gap,
-      color: $color,
-      start: $start
-    )
-  );
-}
-@function dotted-bottom($size: _, $gap: _, $color: _, $start: _) {
-  @return border-construtor(
-    (
-      side: bottom,
-      size: $size,
-      length: $size,
-      gap: $gap,
-      color: $color,
-      start: $start
-    )
-  );
-}
-@function dotted-left($size: _, $gap: _, $color: _, $start: _) {
-  @return border-construtor(
-    (
-      side: left,
-      size: $size,
-      length: $size,
-      gap: $gap,
-      color: $color,
-      start: $start
-    )
-  );
-}
-@function dotted-horizontal($size: _, $gap: _, $color: _, $start: _) {
-  @return dotted-right($size, $gap, $color, $start), dotted-left($size, $gap, $color, $start);
-}
-@function dotted-vertical($size: _, $gap: _, $color: _, $start: _) {
-  @return dotted-top($size, $gap, $color, $start), dotted-bottom($size, $gap, $color, $start);
-}
-@function dotted($size: _, $gap: _, $color: _, $start: _) {
-  @return dotted-top($size, $gap, $color, $start), dotted-right($size, $gap, $color, $start),
-    dotted-bottom($size, $gap, $color, $start), dotted-left($size, $gap, $color, $start);
-}
-
-@function dashed-top($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return border-construtor(
-    (
-      side: top,
+      side: $side,
       size: $size,
       length: $length,
       gap: $gap,
@@ -199,56 +162,6 @@
       start: $start
     )
   );
-}
-@function dashed-right($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return border-construtor(
-    (
-      side: right,
-      size: $size,
-      length: $length,
-      gap: $gap,
-      color: $color,
-      start: $start
-    )
-  );
-}
-@function dashed-bottom($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return border-construtor(
-    (
-      side: bottom,
-      size: $size,
-      length: $length,
-      gap: $gap,
-      color: $color,
-      start: $start
-    )
-  );
-}
-@function dashed-left($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return border-construtor(
-    (
-      side: left,
-      size: $size,
-      length: $length,
-      gap: $gap,
-      color: $color,
-      start: $start
-    )
-  );
-}
-@function dashed-horizontal($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return dashed-right($size, $length, $gap, $color, $start),
-    dashed-left($size, $length, $gap, $color, $start);
-}
-@function dashed-vertical($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return dashed-top($size, $length, $gap, $color, $start),
-    dashed-bottom($size, $length, $gap, $color, $start);
-}
-@function dashed($size: _, $length: _, $gap: _, $color: _, $start: _) {
-  @return dashed-top($size, $length, $gap, $color, $start),
-    dashed-right($size, $length, $gap, $color, $start),
-    dashed-bottom($size, $length, $gap, $color, $start),
-    dashed-left($size, $length, $gap, $color, $start);
 }
 
 @mixin custom-border($borders...) {
