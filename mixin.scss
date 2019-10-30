@@ -1,3 +1,13 @@
+$border-defaults: (
+  'side': 'bottom',
+  'size': 1px,
+  'length': 1px,
+  'gap': 5px,
+  'color': #333,
+  'start': 'origin',
+  'translate': false
+) !default;
+
 @function border-construtor($parameters) {
   @if map-get($parameters, 'side') == 'vertical' {
     @return border-construtor( map-merge($parameters, ('side': top)) ),
@@ -25,14 +35,15 @@
   $length: param-get($parameters, 'length');
   $gap: param-get($parameters, 'gap');
   $color: param-get($parameters, 'color');
+  $translate: param-get($parameters, 'translate');
   $start: param-get($parameters, 'start');
-
+  
   $section: $length + $gap;
   @return (
-    bg-image: (linear-gradient(direction-builder($side, $start), gradient-builder($length, $section, $color))),
-    bg-size: (size-builder($side, $size, $section)),
-    bg-position: (position-builder($side, $start)),
-    bg-repeat: (repeat-builder($side))
+    'bg-image': (linear-gradient(direction-builder($side, $start), gradient-builder($length, $section, $color))),
+    'bg-size': (size-builder($side, $size, $section)),
+    'bg-position': (position-builder($side, $start, $section, $translate)),
+    'bg-repeat': (repeat-builder($side))
   );
 }
 
@@ -42,7 +53,7 @@
     @error 'Value #{$value} of property #{$key} must be either top, or right, or bottom, or left, or vertical, or horizontal, or all.';
   }
   @if ($key == 'size' or $key == 'length' or $key == 'gap') and (type-of($value) != number or type-of($value) == number and $value < 0) {
-    @error 'Value #{$value} of property #{$key} must be non-negative size.';
+    @error 'Value #{$value} of property #{$key} must be non-negative size number.';
   }
   @if $key == 'color' and type-of($value) != color {
     @error 'Value #{$value} of property #{$key} must be color.';
@@ -87,30 +98,38 @@
   }
 }
 
-@function position-builder($side, $start) {
+@function position-builder($side, $start, $move, $translate) {
+  @if not $translate {
+    $move: 0.000001px;
+  } @else if type-of($translate) == 'number' {
+    $move: $move * $translate / ($translate * 0 + 1);
+    @if round($translate) != $translate {
+      @warn 'If you make an animation and use translate property with not an integer value, be sure that both of your values have the same decimal value to prevent unexpected intermittent behavior.';
+    }
+  }
   @if $start == 'center' {
     @return $side;
   } @else if $start == 'origin' {
     @if $side == 'bottom' {
-      @return 0 100%;
+      @return #{$move} 100%;
     } @else if $side == 'top' {
-      @return 100% 0;
+      @return calc(100% - #{$move}) 0;
     } @else if $side == 'right' {
-      @return 100% 100%;
+      @return 100% calc(100% - #{$move});
     } @else if $side == 'left' {
-      @return 0 0;
+      @return 0 #{$move};
     } @else {
       @error "Property #{$side} is invalid.";
     }
   } @else if $start == 'opposite' {
     @if $side == 'bottom' {
-      @return 100% 100%;
+      @return calc(100% + #{$move}) 100%;
     } @else if $side == 'top' {
-      @return 0 0;
+      @return (#{$move} * -1) 0;
     } @else if $side == 'right' {
-      @return 100% 0;
+      @return 100% (#{$move} * -1);
     } @else if $side == 'left' {
-      @return 0 100%;
+      @return 0 calc(100% + #{$move});
     } @else {
       @error "Property #{$side} is invalid.";
     }
@@ -139,27 +158,29 @@
   }
 }
 
-@function dotted($side: _, $size: _, $gap: _, $color: _, $start: _) {
+@function dotted($side: _, $size: _, $gap: _, $color: _, $translate: _, $start: _) {
   @return border-construtor(
     (
-      side: $side,
-      size: $size,
-      length: $size,
-      gap: $gap,
-      color: $color,
-      start: $start
+      'side': $side,
+      'size': $size,
+      'length': $size,
+      'gap': $gap,
+      'color': $color,
+      'translate': $translate,
+      'start': $start
     )
   );
 }
-@function dashed($side: _, $size: _, $length: _, $gap: _, $color: _, $start: _) {
+@function dashed($side: _, $size: _, $length: _, $gap: _, $color: _, $translate: _, $start: _) {
   @return border-construtor(
     (
-      side: $side,
-      size: $size,
-      length: $length,
-      gap: $gap,
-      color: $color,
-      start: $start
+      'side': $side,
+      'size': $size,
+      'length': $length,
+      'gap': $gap,
+      'color': $color,
+      'translate': $translate,
+      'start': $start
     )
   );
 }
@@ -173,17 +194,17 @@
   @each $border-list in $borders {
     @if type-of($border-list) == list {
       @each $border in $border-list {
-        $bg-image-list: append($bg-image-list, map-get($border, bg-image), 'comma');
-        $bg-size-list: append($bg-size-list, map-get($border, bg-size), 'comma');
-        $bg-position-list: append($bg-position-list, map-get($border, bg-position), 'comma');
-        $bg-repeat-list: append($bg-repeat-list, map-get($border, bg-repeat), 'comma');
+        $bg-image-list: append($bg-image-list, map-get($border, 'bg-image'), 'comma');
+        $bg-size-list: append($bg-size-list, map-get($border, 'bg-size'), 'comma');
+        $bg-position-list: append($bg-position-list, map-get($border, 'bg-position'), 'comma');
+        $bg-repeat-list: append($bg-repeat-list, map-get($border, 'bg-repeat'), 'comma');
       }
     } @else {
       $border: $border-list;
-      $bg-image-list: append($bg-image-list, map-get($border, bg-image), 'comma');
-      $bg-size-list: append($bg-size-list, map-get($border, bg-size), 'comma');
-      $bg-position-list: append($bg-position-list, map-get($border, bg-position), 'comma');
-      $bg-repeat-list: append($bg-repeat-list, map-get($border, bg-repeat), 'comma');
+      $bg-image-list: append($bg-image-list, map-get($border, 'bg-image'), 'comma');
+      $bg-size-list: append($bg-size-list, map-get($border, 'bg-size'), 'comma');
+      $bg-position-list: append($bg-position-list, map-get($border, 'bg-position'), 'comma');
+      $bg-repeat-list: append($bg-repeat-list, map-get($border, 'bg-repeat'), 'comma');
     }
   }
 
