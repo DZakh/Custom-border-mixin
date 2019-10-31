@@ -76,7 +76,7 @@ $border-defaults: (
  	'translate': false
 ) !default;  
 ```
-> **Note:** be sure you didn't forget anything, because it will not work not having all default properties.
+> **Note:**  be sure you haven't forgot anything, because it will not work not having all default properties.
 
 
 
@@ -84,7 +84,7 @@ $border-defaults: (
 
 Finally we are here. Let's make it move with `@keyframes`. You can also use `transition` for it, but I'm gonna keep it for you.
 ```scss
-@keyframes  border-animation {
+@keyframes border-animation {
 	from {
 		@include  custom-border( dashed(bottom, 1px, 3px, 11px, red) );
 	}
