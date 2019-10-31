@@ -126,9 +126,9 @@ $border-defaults: (
     @if $side == 'bottom' {
       @return calc(100% + #{$move}) 100%;
     } @else if $side == 'top' {
-      @return (#{$move} * -1) 0;
+      @return calc(#{$move} * -1) 0;
     } @else if $side == 'right' {
-      @return 100% (#{$move} * -1);
+      @return 100% calc(#{$move} * -1);
     } @else if $side == 'left' {
       @return 0 calc(100% + #{$move});
     } @else {
