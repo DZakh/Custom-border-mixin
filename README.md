@@ -11,7 +11,7 @@ Pull-in a latest version with NPM.
     npm install custom-border-mixin -D
 Then import the mixin after vendors in your project.
 
-    @import './node_modules/custom-border-mixin/main.scss';
+    @import 'node_modules/custom-border-mixin';
 That's all! Or instead of it you can barbarously copy everything from the `main.scss` file and paste this somewhere in your project.
 
 ## Create your first border

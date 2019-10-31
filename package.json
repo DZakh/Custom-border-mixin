@@ -1,6 +1,6 @@
 {
   "name": "custom-border-mixin",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "Ultimate mixin for rapid creating customizable dashed and dotted borders with optional animation",
   "main": "index.js",
   "scripts": {
