@@ -15,7 +15,7 @@ Then import the mixin after vendors in your project.
 That's all! Or instead of it you can barbarously copy everything from the `main.scss` file and paste this somewhere in your project.
 
 ## Create your first border
-To make a border you need write the line in your sass stylesheet:
+To make a border you need to write the line in your sass stylesheet:
 
     @include custom-border( dotted() );
 We did it! This will create a simple dotted border with default properties. But I think this's not enough for you. Let's make something more crazy:
@@ -33,22 +33,22 @@ Honestly I don't really know how it looks, but let's figure it out. As you can s
 Let's take a look at `dashed()` function closer. I know there's also `dotted()` one, but it's literally the same just without length property.
 
     dashed($side, $size, $length, $gap, $color, $translate, $start)
-Ok, one by one:
-**`$side`** (string)
-Should be either **top**, **right**, **bottom**, **left**, **vertical**, **horizontal**, or **all**.
-**`$size`** (number)
-Should be any non-negative size number. Represents size of dotes or thickness of dashes.
-**`$length`** (number)
-Should be any non-negative size number. Length of dashes.
-**`$gap`** (number)
-Should be any non-negative size number. Length of empty intervals.
-**`$color`** (color)
-Should be color. It's color.
-**`$translate`** (anything)
-Can take any value. If false, will not change anything; if true, will move the border one section; if number, will take the number as a coefficient and move the border from the origin position. 
-This's a very useful property for fine-tuning borders and also for animations.
-**`$start`** (string)
-Should be either **origin**,  or **center**,  or **opposite**. This is like justify-content start, center, and end. For better understanding take a look at [code example](https://codepen.io/dzakh/pen/NWWwRpp). 
+Ok, one by one:  
+**`$side`** (string)  
+Should be either **top**, **right**, **bottom**, **left**, **vertical**, **horizontal**, or **all**.  
+**`$size`** (number)  
+Should be any non-negative size number. Represents size of dots or thickness of dashes.  
+**`$length`** (number)  
+Should be any non-negative size number. Length of dashes.  
+**`$gap`** (number)  
+Should be any non-negative size number. Length of empty intervals.  
+**`$color`** (color)  
+Should be color. It's color.  
+**`$translate`** (anything)  
+Can take any value. If false, will not change anything; if true, will move the border one section; if number, will take the number as a coefficient and move the border from the origin position.  
+This's a very useful property for fine-tuning borders and also for animations.  
+**`$start`** (string)  
+Should be either **origin**,  or **center**,  or **opposite**. This is like justify-content start, center, and end. For better understanding take a look at [code example](https://codepen.io/dzakh/pen/NWWwRpp).  
 
 > **Note:** translate property doesn't work with **center** value.
 
@@ -81,10 +81,10 @@ Finally we are here. Let's make it move with `@keyframes`. You can also use `tra
 
 	@keyframes  border-animation {
 	  from {
-		@include  custom-border( dashed(bottom, 1rem, 3rem, 11rem, red) );
+		@include  custom-border( dashed(bottom, 1px, 3px, 11px, red) );
 	  }
 	  to {
-	    @include  custom-border( dashed(bottom, 1rem, 3rem, 11rem, red, true) );
+	    @include  custom-border( dashed(bottom, 1px, 3px, 11px, red, true) );
 	  }
 	}
 Very simple animation. It moves the border one section counterclockwise - to right in our case. Turn on it:
