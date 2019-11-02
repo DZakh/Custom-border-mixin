@@ -1,12 +1,12 @@
 # Custom border mixin
 
-This mixin is an ultimate solution if you need very customizable dashed or dotted borders for your project. You can tune sides of borders, dots' size, dashes' length, gap between them, as well as color, and starting point which allows you to create magnificent animations.
+This mixin is an ultimate solution if you need very customizable dashed or dotted borders for your project. You can tune sides of borders, dots' size, dashes' length, the gap between them, as well as color, and starting point which allows you to create magnificent animations.
 
 ### [Demo with code examples](https://codepen.io/dzakh/pen/NWWwRpp)
 
 ## Getting started
 
-Pull-in a latest version with NPM.
+Install the latest version with NPM.
 
     npm install custom-border-mixin -D
 Then import the mixin after vendors in your project.
@@ -14,14 +14,14 @@ Then import the mixin after vendors in your project.
 @import 'node_modules/custom-border-mixin';
 ```
 
-That's all! Or instead of it you can barbarously copy everything from the `index.scss` file and paste this somewhere in your project.
+That's all! Or instead you can barbarously copy everything from the `index.scss` file and paste this somewhere in your project.
 
 ## Create your first border
-To make a border you need to write the line in your sass stylesheet:
+To make a border you need to write this line in your sass stylesheet:
 ```scss
 @include custom-border( dotted() );
 ```
-We did it! This will create a simple dotted border with default properties. But I think this's not enough for you. Let's make something more crazy:
+We did it! This will create a simple dotted border with default properties. But I think that's not enough for you. Let's make something more crazy:
 ```scss
 @include custom-border(
 	dotted(_, 1px, 4px, red),
@@ -30,7 +30,7 @@ We did it! This will create a simple dotted border with default properties. But 
 	dotted(_, 1px, 4px, pink, 0.5)
 );
 ```
-Honestly I don't really know how it looks, but let's figure it out. As you can see the mixin `custom-border()` can take as parameters functions either `dotted()`, or `dashed()`. Everything should be built with these functions, if you call another mixin `custom-border()` it will clear all borders initialized before.
+Honestly I don't really know how it looks, but let's figure it out. As you can see the mixin `custom-border()` can take functions either `dotted()`, or `dashed()` as parameters. Everything should be built with these functions, and if you call another mixin `custom-border()` it will clear all borders initialized before.
 
 ## Tuning borders
 
@@ -48,16 +48,16 @@ Should be any non-negative size number. Length of dashes.
 **`$gap`** (number)  
 Should be any non-negative size number. Length of empty intervals.  
 **`$color`** (color)  
-Should be color. It's color.  
+Should be a color. It's color.  
 **`$translate`** (anything)  
-Can take any value. If false, will not change anything; if true, will move the border one section; if number, will take the number as a coefficient and move the border from the origin position.  
-This's a very useful property for fine-tuning borders and also for animations.  
+Can take any value. If false, will not change anything; if true, will move the border one section; if number, will take the number as a coefficient and move the border from the original position.  
+That's a very useful property for fine-tuning borders and also for animations.  
 **`$start`** (string)  
-Should be either **origin**,  or **center**,  or **opposite**. This is like justify-content start, center, and end. For better understanding take a look at [code example](https://codepen.io/dzakh/pen/NWWwRpp).  
+Should be either **origin**,  or **center**,  or **opposite**. These are like justify-content's values: start, center and end. For better understanding take a look at [code example](https://codepen.io/dzakh/pen/NWWwRpp).  
 
 > **Note:** translate property doesn't work with **center** value.
 
-*Also you can use the underscore sign `_` to skip the property and keep it as default.*
+*Also, you can use the underscore sign `_` to skip the property and keep it as default.*
 
 ### Border defaults
 
@@ -76,13 +76,13 @@ $border-defaults: (
 	'translate': false
 ) !default;  
 ```
-> **Note:**  be sure you haven't forgot anything, because it will not work not having all default properties.
+> **Note:**  be sure not to forget anything, because it won't work without all these properties.
 
 
 
 ## Animation
 
-Finally we are here. Let's make it move with `@keyframes`. You can also use `transition` for it, but I'm gonna keep it for you.
+Finally we are here. Let's make it move with `@keyframes`. You can also use `transition` for it, but I'm going to keep it for you.
 ```scss
 @keyframes border-animation {
 	from {
@@ -93,7 +93,7 @@ Finally we are here. Let's make it move with `@keyframes`. You can also use `tra
 	}
 }
 ```
-Very simple animation. It moves the border one section counterclockwise - to right in our case. Turn on it:
+Very simple animation. It moves the border one section counterclockwise — to the right in our case. Turn it on:
 ```scss
 .item-with-super-cool-border {
 	/* Some styling */
@@ -106,15 +106,15 @@ Very simple animation. It moves the border one section counterclockwise - to rig
 ```
 You can make a lot of cool animations playing around with translate property. Use number coefficients to make smooth transitions between sides, and use negative values to turn specific border to different direction. [More animation examples on CodePen](https://codepen.io/dzakh/pen/NWWwRpp).
 
-> **Note:** be sure that both of your values have the same decimal part to prevent unexpected intermittent behavior.
+> **Note:** be sure that both of your values have the same decimal part to prevent unexpected jerking behavior.
 
 ## Known issues
 
- - Since this mixin is built on border-image property, you should use pseudo element to use it with your own border-image
- - And you cannot use border-radius property
+ - Since this mixin is built on border-image property, you should create pseudo element to use it with your own border-image.
+ - And you cannot use border-radius property.
 
 ## Let's wrap it up
 
-I  made this mixin only fortnight after first acquaintance with sass. Now I'm in love this preprocessor, but I would not be able to make this mixin so customizable, if there were no [Empty-state mixin](https://github.com/wildhaber/empty-state) being kind of a master for me during the path.
+I  made this mixin only fortnight after first acquaintance with sass. Now I'm in love with this preprocessor, but I would not be able to make this mixin so customizable, if there were no [Empty-state mixin](https://github.com/wildhaber/empty-state) that was kind of a mentor for me during my path.
 
-I hope you'll find my mixin useful in your work \^_^
+I hope you find my mixin useful in your work \^_^

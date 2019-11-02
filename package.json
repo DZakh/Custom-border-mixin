@@ -1,6 +1,6 @@
 {
   "name": "custom-border-mixin",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Ultimate mixin for rapid creating customizable dashed and dotted borders with optional animations",
   "main": "index.scss",
   "scripts": {
