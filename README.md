@@ -73,7 +73,7 @@ $border-defaults: (
 	'gap': 1px,
 	'color': #000,
 	'start': 'origin',
- 	'translate': false
+	'translate': false
 ) !default;  
 ```
 > **Note:**  be sure you haven't forgot anything, because it will not work not having all default properties.
