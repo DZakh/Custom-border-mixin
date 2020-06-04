@@ -1,6 +1,6 @@
 {
   "name": "custom-border-mixin",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Ultimate mixin for rapid creating customizable dashed and dotted borders with optional animations",
   "main": "index.scss",
   "scripts": {
@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DZakh/Custom-border-mixin.git"
+    "url": "git+https://github.com/DZakh-packages/Custom-border-mixin.git"
   },
   "keywords": ["mixin", "sass", "scss", "custom", "border", "dashed", "dotted", "animated", "gap", "animation"],
-  "author": "Dmitry Zakh <dzakh.dev@gmail.com> (https://dzakh.dev/)",
+  "author": "Dmitry Zakharov <dzakh.dev@gmail.com> (https://dzakh.dev/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DZakh/Custom-border-mixin/issues"
+    "url": "https://github.com/DZakh-packages/Custom-border-mixin/issues"
   },
-  "homepage": "https://github.com/DZakh/Custom-border-mixin#readme"
+  "homepage": "https://github.com/DZakh-packages/Custom-border-mixin#readme"
 }
