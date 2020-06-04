@@ -7,14 +7,13 @@ This mixin is an ultimate solution if you need very customizable dashed or dotte
 ## Getting started
 
 Install the latest version with NPM.
-
-    npm install custom-border-mixin -D
+```
+npm install custom-border-mixin -D
+```
 Then import the mixin after vendors in your project.
 ```scss
-@import 'node_modules/custom-border-mixin';
+@import '~custom-border-mixin';
 ```
-
-That's all! Or instead you can barbarously copy everything from the `index.scss` file and paste this somewhere in your project.
 
 ## Create your first border
 To make a border you need to write this line in your sass stylesheet:
