@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $border-defaults: (
   'side': 'bottom',
   'size': 1px,
@@ -65,7 +67,7 @@ $border-defaults: (
 }
 
 @function gradient-builder($length, $section, $color) {
-  @return $color, $color ($length / $section * 100%), transparent ($length / $section * 100%);
+  @return $color, $color (math.div($length, $section) * 100%), transparent (math.div($length, $section) * 100%);
 }
 
 @function direction-builder($side, $start) {
